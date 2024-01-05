@@ -1,4 +1,3 @@
-// api/routes.go
 package routes
 
 import (
@@ -7,11 +6,12 @@ import (
 )
 
 func SetupRoutes(app *fiber.App, userRepository *users.UserRepository) {
+
 	userHandler := users.NewHandler(userRepository)
 
-	app.Get("/users", userHandler.ListUsersHandler)
-	app.Get("/users/:id", userHandler.GetUserHandler)
-	app.Post("/users", userHandler.CreateUserHandler)
-	app.Put("/users/:id", userHandler.UpdateUserHandler)
-	app.Delete("/users/:id", userHandler.DeleteUserHandler)
+	app.Get("/api/users", userHandler.ListUsersHandler)
+	app.Get("/api/users/:id", userHandler.GetUserHandler)
+	app.Post("/api/users", userHandler.CreateUserHandler)
+	app.Put("/api/users/:id", userHandler.UpdateUserHandler)
+	app.Delete("/api/users/:id", userHandler.DeleteUserHandler)
 }
