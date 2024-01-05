@@ -1,4 +1,3 @@
-// fiber.go
 package main
 
 import (

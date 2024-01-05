@@ -1,4 +1,3 @@
-// main.go
 package main
 
 import (
@@ -8,6 +7,7 @@ import (
 )
 
 func main() {
+	// Setting up environment (dotenv load, gorm open etc)
 	db, err := SetupEnvironment()
 	if err != nil {
 		log.Fatal("Error setting up environment:", err)
