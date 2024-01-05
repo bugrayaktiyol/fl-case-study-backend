@@ -1,6 +1,8 @@
 package users
 
 import (
+	"strings"
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -34,6 +36,11 @@ func (us *UserService) CreateUserHandler(c *fiber.Ctx) error {
 	if err := c.BodyParser(&user); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid JSON"})
 	}
+
+	// Handling Tags slice
+	tagString := strings.Join(user.Tags, ",")
+	user.Tags = []string{tagString}
+
 	if err := us.repository.Create(&user); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
