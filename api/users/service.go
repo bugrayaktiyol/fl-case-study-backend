@@ -1,9 +1,5 @@
 package users
 
-import (
-	"github.com/gofiber/fiber/v2"
-)
-
 type UserService struct {
 	repository *UserRepository
 }
@@ -12,51 +8,37 @@ func NewUserService(repository *UserRepository) *UserService {
 	return &UserService{repository: repository}
 }
 
-func (us *UserService) ListUsersHandler(c *fiber.Ctx) error {
-	users, err := us.repository.FindAll()
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
-	}
-	return c.JSON(users)
+// ListUsers returns a list of all users
+func (us *UserService) ListUsers() ([]User, error) {
+	return us.repository.FindAll()
 }
 
-func (us *UserService) GetUserHandler(c *fiber.Ctx) error {
-	id := c.Params("id")
+// GetUser returns a specific user by ID
+func (us *UserService) GetUser(id string) (*User, error) {
 	user, err := us.repository.FindByID(id)
 	if err != nil {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": err.Error()})
+		return nil, err
 	}
-	return c.JSON(user)
+	return &user, nil
 }
 
-func (us *UserService) CreateUserHandler(c *fiber.Ctx) error {
-	var user User
-	if err := c.BodyParser(&user); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid JSON"})
+// CreateUser creates a new user
+func (us *UserService) CreateUser(user *User) (*User, error) {
+	if err := us.repository.Create(user); err != nil {
+		return nil, err
 	}
-
-	if err := us.repository.Create(&user); err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
-	}
-	return c.JSON(user)
+	return user, nil
 }
 
-func (us *UserService) UpdateUserHandler(c *fiber.Ctx) error {
-	id := c.Params("id")
-	var updatedUser User
-	if err := c.BodyParser(&updatedUser); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid JSON"})
+// UpdateUser updates a specific user by ID
+func (us *UserService) UpdateUser(id string, updatedUser *User) (*User, error) {
+	if err := us.repository.UpdateByID(id, updatedUser); err != nil {
+		return nil, err
 	}
-	if err := us.repository.UpdateByID(id, &updatedUser); err != nil {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": err.Error()})
-	}
-	return c.JSON(updatedUser)
+	return updatedUser, nil
 }
 
-func (us *UserService) DeleteUserHandler(c *fiber.Ctx) error {
-	id := c.Params("id")
-	if err := us.repository.DeleteByID(id); err != nil {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": err.Error()})
-	}
-	return c.SendStatus(fiber.StatusNoContent)
+// DeleteUser deletes a specific user by ID
+func (us *UserService) DeleteUser(id string) error {
+	return us.repository.DeleteByID(id)
 }
