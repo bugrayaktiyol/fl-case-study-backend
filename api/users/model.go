@@ -9,5 +9,5 @@ type User struct {
 	Name    string
 	Age     int
 	Address string
-	Tags    []string `gorm:"type:text"`
+	Tags    string `gorm:"type:text"`
 }
