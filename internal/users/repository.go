@@ -6,18 +6,27 @@ import (
 	"gorm.io/gorm"
 )
 
+//go:generate mockery --name UserRepository
+type UserRepository interface {
+	FindAll() ([]*User, error)
+	FindByID(id string) (User, error)
+	Create(user *User) error
+	UpdateByID(id string, updatedUser *User) error
+	DeleteByID(id string) error
+}
+
 var ErrDatabaseConnectionNil = errors.New("Database connection is nil")
 
-type UserRepository struct {
+type userRepository struct {
 	db *gorm.DB
 }
 
-func NewUserRepository(db *gorm.DB) *UserRepository {
-	return &UserRepository{db: db}
+func NewRepository(db *gorm.DB) UserRepository {
+	return &userRepository{db: db}
 }
 
-func (ur *UserRepository) FindAll() ([]User, error) {
-	var users []User
+func (ur *userRepository) FindAll() ([]*User, error) {
+	var users []*User
 	if ur.db == nil {
 		return users, ErrDatabaseConnectionNil
 	}
@@ -25,7 +34,7 @@ func (ur *UserRepository) FindAll() ([]User, error) {
 	return users, nil
 }
 
-func (ur *UserRepository) FindByID(id string) (User, error) {
+func (ur *userRepository) FindByID(id string) (User, error) {
 	var user User
 	if ur.db == nil {
 		return user, ErrDatabaseConnectionNil
@@ -36,7 +45,7 @@ func (ur *UserRepository) FindByID(id string) (User, error) {
 	return user, nil
 }
 
-func (ur *UserRepository) Create(user *User) error {
+func (ur *userRepository) Create(user *User) error {
 	if ur.db == nil {
 		return ErrDatabaseConnectionNil
 	}
@@ -44,7 +53,7 @@ func (ur *UserRepository) Create(user *User) error {
 	return nil
 }
 
-func (ur *UserRepository) UpdateByID(id string, updatedUser *User) error {
+func (ur *userRepository) UpdateByID(id string, updatedUser *User) error {
 	var user User
 	if ur.db == nil {
 		return ErrDatabaseConnectionNil
@@ -56,7 +65,7 @@ func (ur *UserRepository) UpdateByID(id string, updatedUser *User) error {
 	return nil
 }
 
-func (ur *UserRepository) DeleteByID(id string) error {
+func (ur *userRepository) DeleteByID(id string) error {
 	var user User
 	if ur.db == nil {
 		return ErrDatabaseConnectionNil

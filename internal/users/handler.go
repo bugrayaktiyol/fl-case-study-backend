@@ -4,12 +4,11 @@ import "github.com/gofiber/fiber/v2"
 
 // Handler struct contains functions handling HTTP requests
 type Handler struct {
-	service *UserService
+	service UserService
 }
 
 // NewHandler returns a new Handler instance
-func NewHandler(repository *UserRepository) *Handler {
-	service := NewUserService(repository)
+func NewHandler(service UserService) *Handler {
 	return &Handler{service: service}
 }
 
