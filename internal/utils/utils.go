@@ -1,9 +1,9 @@
-package main
+package utils
 
 import (
 	"os"
 
-	"github.com/bugrayaktiyol/fl-case-study-backend/api/users"
+	"github.com/bugrayaktiyol/fl-case-study-backend/internal/users"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"

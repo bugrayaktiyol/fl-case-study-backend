@@ -3,21 +3,25 @@ package main
 import (
 	"log"
 
-	"github.com/bugrayaktiyol/fl-case-study-backend/api/users"
+	"github.com/bugrayaktiyol/fl-case-study-backend/internal/users"
+	"github.com/bugrayaktiyol/fl-case-study-backend/internal/utils"
 )
 
 func main() {
+
 	// Setting up environment (dotenv load, gorm open etc)
-	db, err := SetupEnvironment()
+	db, err := utils.SetupEnvironment()
 	if err != nil {
 		log.Fatal("Error setting up environment:", err)
 	}
 
-	AutoMigrateModels(db)
+	utils.AutoMigrateModels(db)
 
-	userRepository := users.NewUserRepository(db)
+	userRepository := users.NewRepository(db)
+	userService := users.NewService(userRepository)
+	userHandler := users.NewHandler(userService)
 
-	app := SetupFiberApp(userRepository)
+	app := utils.SetupFiberApp(userHandler)
 
 	app.Listen(":3001")
 }
